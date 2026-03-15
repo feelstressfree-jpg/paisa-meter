@@ -1,148 +1,237 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Assistant Pro</title>
+    <title>Paisa Meter | Real-Time Financial Toolkit</title>
+    <meta name="description" content="Paisa Meter: High-accuracy financial tools with live currency exchange rates, EMI, SIP, and Age calculations.">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --bg-color: #f4f4f9;
-            --card-bg: #ffffff;
-            --text-color: #333;
-            --accent-color: #007bff;
-        }
-
-        body.dark-mode {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --accent-color: #3700b3;
-        }
-
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            transition: 0.3s;
-        }
-
-        #main-container {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .controls { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        #start-btn { background: #28a745; color: white; }
-        #stop-btn { background: #dc3545; color: white; }
-        #dark-mode-btn { background: #6c757d; color: white; font-size: 12px; }
-
-        .display-area {
-            margin-top: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            min-height: 100px;
-            background: var(--bg-color);
-            text-align: left;
-        }
-
-        .slider-container { margin-top: 20px; font-size: 13px; }
-        input[type="range"] { width: 100%; cursor: pointer; }
-
-        .label { font-weight: bold; color: var(--accent-color); font-size: 14px; }
+        :root { --primary: #0d47a1; --secondary: #2e7d32; --bg: #f4f7f6; --card: #ffffff; --text: #212121; --border: #e0e0e0; }
+        [data-theme="dark"] { --primary: #448aff; --secondary: #66bb6a; --bg: #121212; --card: #1e1e1e; --text: #ffffff; --border: #333333; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--bg); color: var(--text); transition: 0.3s; line-height: 1.6; }
+        nav { background: var(--primary); padding: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo-text { color: white; font-size: 24px; font-weight: 800; cursor: pointer; }
+        .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-link { color: white; text-decoration: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .nav-link.active { background: rgba(255,255,255,0.2); font-weight: bold; }
+        .theme-toggle { background: none; border: 1px solid white; color: white; padding: 6px 15px; border-radius: 15px; cursor: pointer; font-size: 12px; }
+        .container { max-width: 1000px; margin: 40px auto; background: var(--card); padding: 40px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
+        @media (max-width: 768px) { .calc-grid { grid-template-columns: 1fr; } }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); box-sizing: border-box; font-size: 16px; }
+        .result-card { background: var(--primary); color: white; padding: 25px; border-radius: 12px; text-align: center; }
+        .res-val { font-size: 32px; font-weight: bold; display: block; margin-top: 5px; }
+        .btn-submit { background: var(--secondary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .legal-text h3 { color: var(--primary); margin-top: 25px; }
+        footer { text-align: center; padding: 50px 20px; color: #777; border-top: 1px solid var(--border); margin-top: 50px; }
+        .footer-links span { margin: 0 10px; cursor: pointer; color: var(--primary); text-decoration: underline; font-size: 14px; }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-<div id="main-container">
-    <div class="controls">
-        <button id="dark-mode-btn" onclick="toggleDarkMode()">Dark Mode</button>
-        <div>
-            <button id="start-btn" onclick="startProcess()">Start</button>
-            <button id="stop-btn" onclick="stopProcess()">Stop</button>
+<nav>
+    <div class="nav-container">
+        <div class="logo-text" onclick="showPage('home')">📊 PAISA METER</div>
+        <div class="nav-links">
+            <a class="nav-link active" onclick="showPage('home')">Home</a>
+            <a class="nav-link" onclick="showPage('emi')">EMI</a>
+            <a class="nav-link" onclick="showPage('sip')">SIP</a>
+            <a class="nav-link" onclick="showPage('age')">Age</a>
+            <a class="nav-link" onclick="showPage('currency')">Currency</a>
+            <a class="nav-link" onclick="showPage('contact')">Contact</a>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </div>
+</nav>
+
+<div class="container">
+    
+    <div id="home" class="page active">
+        <h1>Live Financial Intelligence</h1>
+        <p>Paisa Meter provides real-time data to help you manage your money effectively. From live currency rates to smart investment planning, we've got you covered.</p>
+        <div class="calc-grid">
+            <div style="background: rgba(13,43,161,0.05); padding: 20px; border-radius: 10px;">
+                <h3>Live Currency</h3>
+                <p>Powered by global exchange APIs, our converter updates in real-time to give you the most accurate market rates.</p>
+            </div>
+            <div style="background: rgba(46,125,50,0.05); padding: 20px; border-radius: 10px;">
+                <h3>Smart Visuals</h3>
+                <p>Interactive charts help you visualize your loan interest vs principal and your investment growth over time.</p>
+            </div>
         </div>
     </div>
 
-    <div class="label">Input (Hindi):</div>
-    <div id="input-text" class="display-area">Aapki awaaz yahan dikhegi...</div>
-
-    <div class="label" style="margin-top:15px;">Output (English):</div>
-    <div id="output-text" class="display-area">Translation yahan dikhega...</div>
-
-    <div class="slider-container">
-        <label>Stealth Mode (Opacity):</label>
-        <input type="range" min="0.05" max="1" step="0.05" value="1" oninput="adjustOpacity(this.value)">
+    <div id="emi" class="page">
+        <h2>Loan EMI Calculator</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Loan Amount</label><input type="number" id="eAmt" value="1000000" oninput="updateEmi()">
+                <label>Rate (%)</label><input type="number" id="eRate" value="8.5" step="0.1" oninput="updateEmi()">
+                <label>Tenure (Years)</label><input type="number" id="eTime" value="5" oninput="updateEmi()">
+                <div class="result-card">Monthly EMI<span id="emiRes" class="res-val">0</span></div>
+            </div>
+            <canvas id="emiChart"></canvas>
+        </div>
     </div>
+
+    <div id="sip" class="page">
+        <h2>SIP Returns Calculator</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Monthly SIP</label><input type="number" id="sAmt" value="5000" oninput="updateSip()">
+                <label>Return (%)</label><input type="number" id="sRate" value="12" oninput="updateSip()">
+                <label>Years</label><input type="number" id="sTime" value="10" oninput="updateSip()">
+                <div class="result-card">Maturity Value<span id="sipTotal" class="res-val">0</span></div>
+            </div>
+            <canvas id="sipChart"></canvas>
+        </div>
+    </div>
+
+    <div id="age" class="page">
+        <h2>Age Calculator</h2>
+        <div style="max-width: 500px; margin: auto;">
+            <label>Date of Birth</label><input type="date" id="dob" onchange="calculateAge()">
+            <div class="result-card" style="background: var(--secondary);">Exact Age<span id="ageRes" class="res-val">---</span></div>
+        </div>
+    </div>
+
+    <div id="currency" class="page">
+        <h2>Live Global Currency</h2>
+        <p id="liveStatus" style="font-size: 12px; color: var(--secondary);">● Live Rates Active</p>
+        <div style="max-width: 500px; margin: auto;">
+            <label>Amount</label><input type="number" id="amtInput" value="1" oninput="convert()">
+            <label>From</label><select id="fromCur" onchange="convert()"></select>
+            <label>To</label><select id="toCur" onchange="convert()"></select>
+            <div class="result-card" style="background: var(--secondary);">Current Value<span id="convRes" class="res-val">0.00</span></div>
+        </div>
+    </div>
+
+    <div id="contact" class="page">
+        <h2>Contact Us</h2>
+        <form onsubmit="alert('Thank you! Message sent.'); return false;">
+            <label>Name</label><input type="text" required>
+            <label>Email</label><input type="email" required>
+            <label>Message</label><textarea style="height:100px;" required></textarea>
+            <button type="submit" class="btn-submit">Send Message</button>
+        </form>
+    </div>
+
+    <div id="privacy" class="page legal-text"><h2>Privacy Policy</h2><p>Paisa Meter ensures that your financial data is never stored. We use standard cookies for site analytics and live rate synchronization.</p></div>
+    <div id="about" class="page legal-text"><h2>About Us</h2><p>Paisa Meter is a modern financial platform providing tools for a global audience with 100% transparency.</p></div>
+    <div id="disclaimer" class="page legal-text"><h2>Disclaimer</h2><p>Calculated results are estimates. Currency rates are sourced from open-market APIs and may vary slightly from bank rates.</p></div>
+
 </div>
 
+<footer>
+    <p>&copy; 2026 Paisa Meter | Precision Financial Tools</p>
+    <div class="footer-links"><span onclick="showPage('privacy')">Privacy Policy</span> | <span onclick="showPage('about')">About Us</span> | <span onclick="showPage('disclaimer')">Disclaimer</span></div>
+</footer>
+
 <script>
-    let recognition;
-    if ('webkitSpeechRecognition' in window) {
-        recognition = new webkitSpeechRecognition();
-        recognition.lang = 'hi-IN';
-        recognition.continuous = true;
-        recognition.interimResults = false;
+let eChart, sChart, liveRates = {};
+const api_url = "https://open.er-api.com/v6/latest/USD";
+
+async function fetchLiveRates() {
+    try {
+        const response = await fetch(api_url);
+        const data = await response.json();
+        liveRates = data.rates;
+        initCurrencies();
+        convert();
+    } catch (e) {
+        liveRates = {"USD": 1, "INR": 83.5, "EUR": 0.92, "GBP": 0.79};
+        initCurrencies();
+        document.getElementById('liveStatus').innerText = "○ Offline Rates Active";
     }
+}
 
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        const btn = document.getElementById('dark-mode-btn');
-        btn.innerText = document.body.classList.contains('dark-mode') ? "Light Mode" : "Dark Mode";
+function initCurrencies() {
+    const from = document.getElementById('fromCur'), to = document.getElementById('toCur');
+    from.innerHTML = ""; to.innerHTML = "";
+    Object.keys(liveRates).forEach(c => {
+        from.innerHTML += `<option value="${c}">${c}</option>`;
+        to.innerHTML += `<option value="${c}">${c}</option>`;
+    });
+    from.value = "USD"; to.value = "INR";
+}
+
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => {
+        l.classList.remove('active');
+        if(l.innerText.toLowerCase().includes(id)) l.classList.add('active');
+    });
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const isDark = body.getAttribute('data-theme') === 'dark';
+    body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.querySelector('.theme-toggle').innerText = isDark ? "🌙 Dark Mode" : "☀️ Light Mode";
+}
+
+function calculateAge() {
+    const dob = new Date(document.getElementById('dob').value);
+    const today = new Date();
+    let y = today.getFullYear() - dob.getFullYear();
+    let m = today.getMonth() - dob.getMonth();
+    let d = today.getDate() - dob.getDate();
+    if (d < 0) { m--; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+    if (m < 0) { y--; m += 12; }
+    document.getElementById('ageRes').innerText = `${y}y ${m}m ${d}d`;
+}
+
+function updateEmi() {
+    let P = parseFloat(document.getElementById('eAmt').value) || 0;
+    let R = (parseFloat(document.getElementById('eRate').value) / 12) / 100;
+    let N = parseFloat(document.getElementById('eTime').value) * 12;
+    if(P > 0 && R > 0 && N > 0) {
+        let emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+        document.getElementById('emiRes').innerText = Math.round(emi).toLocaleString();
+        drawChart('emiChart', ['Principal', 'Interest'], [P, (emi * N) - P], eChart, c => eChart = c);
     }
+}
 
-    function adjustOpacity(val) {
-        document.getElementById('main-container').style.opacity = val;
+function updateSip() {
+    let P = parseFloat(document.getElementById('sAmt').value) || 0;
+    let R = (parseFloat(document.getElementById('sRate').value) / 12) / 100;
+    let N = parseFloat(document.getElementById('sTime').value) * 12;
+    if(P > 0 && R > 0 && N > 0) {
+        let total = P * ((Math.pow(1 + R, N) - 1) / R) * (1 + R);
+        document.getElementById('sipTotal').innerText = Math.round(total).toLocaleString();
+        drawChart('sipChart', ['Invested', 'Profit'], [P*N, total - (P*N)], sChart, c => sChart = c);
     }
+}
 
-    function startProcess() {
-        recognition.start();
-        document.getElementById('input-text').innerText = "Suna ja raha hai...";
+function convert() {
+    const amt = parseFloat(document.getElementById('amtInput').value) || 0;
+    const from = document.getElementById('fromCur').value;
+    const to = document.getElementById('toCur').value;
+    if(liveRates[from] && liveRates[to]) {
+        const res = (amt / liveRates[from]) * liveRates[to];
+        document.getElementById('convRes').innerText = res.toFixed(2);
     }
+}
 
-    function stopProcess() {
-        recognition.stop();
-    }
+function drawChart(id, labels, data, chartObj, updateRef) {
+    let ctx = document.getElementById(id).getContext('2d');
+    if (chartObj) chartObj.destroy();
+    updateRef(new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#0d47a1', '#2e7d32'] }] },
+        options: { plugins: { legend: { position: 'bottom' } } }
+    }));
+}
 
-    recognition.onresult = async (event) => {
-        let hindiText = event.results[event.results.length - 1][0].transcript;
-        document.getElementById('input-text').innerText = hindiText;
-
-        // Translation API Call
-        const res = await fetch(`https://api.mymemory.translated.net/get?q=${hindiText}&langpair=hi|en`);
-        const data = await res.json();
-        let englishText = data.responseData.translatedText;
-        
-        document.getElementById('output-text').innerText = englishText;
-
-        // Voice Output
-        let speech = new SpeechSynthesisUtterance(englishText);
-        speech.lang = 'en-US';
-        window.speechSynthesis.speak(speech);
-    };
-
-    recognition.onerror = (err) => console.error("Error:", err);
+fetchLiveRates(); updateEmi(); updateSip();
 </script>
-
 </body>
 </html>
