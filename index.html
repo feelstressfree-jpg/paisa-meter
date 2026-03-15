@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paisa Meter | Real-Time Financial Toolkit</title>
-    <meta name="description" content="Paisa Meter: High-accuracy financial tools with live currency exchange rates, EMI, SIP, and Age calculations.">
+    <meta name="description" content="Paisa Meter: High-accuracy financial tools with live currency exchange rates, EMI, SIP, GST, FD, RD and Age calculations.">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0d47a1; --secondary: #2e7d32; --bg: #f4f7f6; --card: #ffffff; --text: #212121; --border: #e0e0e0; }
@@ -42,6 +42,9 @@
             <a class="nav-link active" onclick="showPage('home')">Home</a>
             <a class="nav-link" onclick="showPage('emi')">EMI</a>
             <a class="nav-link" onclick="showPage('sip')">SIP</a>
+            <a class="nav-link" onclick="showPage('gst')">GST</a>
+            <a class="nav-link" onclick="showPage('fd')">FD/RD</a>
+            <a class="nav-link" onclick="showPage('lumpsum')">Lumpsum</a>
             <a class="nav-link" onclick="showPage('age')">Age</a>
             <a class="nav-link" onclick="showPage('currency')">Currency</a>
             <a class="nav-link" onclick="showPage('contact')">Contact</a>
@@ -61,8 +64,8 @@
                 <p>Powered by global exchange APIs, our converter updates in real-time to give you the most accurate market rates.</p>
             </div>
             <div style="background: rgba(46,125,50,0.05); padding: 20px; border-radius: 10px;">
-                <h3>Smart Visuals</h3>
-                <p>Interactive charts help you visualize your loan interest vs principal and your investment growth over time.</p>
+                <h3>All Finance Tools</h3>
+                <p>From GST calculation to Mutual Fund planning, calculate everything with precision in one place.</p>
             </div>
         </div>
     </div>
@@ -90,6 +93,53 @@
                 <div class="result-card">Maturity Value<span id="sipTotal" class="res-val">0</span></div>
             </div>
             <canvas id="sipChart"></canvas>
+        </div>
+    </div>
+
+    <div id="gst" class="page">
+        <h2>GST Calculator</h2>
+        <div style="max-width: 500px; margin: auto;">
+            <label>Amount (₹)</label><input type="number" id="gstAmt" value="1000" oninput="updateGst()">
+            <label>GST Rate (%)</label>
+            <select id="gstRate" onchange="updateGst()">
+                <option value="5">5%</option>
+                <option value="12">12%</option>
+                <option value="18" selected>18%</option>
+                <option value="28">28%</option>
+            </select>
+            <div class="result-card">Total with GST<span id="gstTotal" class="res-val">0</span></div>
+            <p style="text-align: center; margin-top: 10px;">GST Amount: ₹<span id="gstOnly">0</span></p>
+        </div>
+    </div>
+
+    <div id="fd" class="page">
+        <h2>FD & RD Calculator</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Investment Type</label>
+                <select id="invType" onchange="updateFdRd()">
+                    <option value="FD">Fixed Deposit (FD)</option>
+                    <option value="RD">Recurring Deposit (RD)</option>
+                </select>
+                <label>Amount (₹)</label><input type="number" id="fAmt" value="100000" oninput="updateFdRd()">
+                <label>Interest Rate (%)</label><input type="number" id="fRate" value="7" oninput="updateFdRd()">
+                <label>Years</label><input type="number" id="fTime" value="5" oninput="updateFdRd()">
+                <div class="result-card">Maturity Value<span id="fdTotal" class="res-val">0</span></div>
+            </div>
+            <canvas id="fdChart"></canvas>
+        </div>
+    </div>
+
+    <div id="lumpsum" class="page">
+        <h2>Lumpsum Investment Calculator</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Total Investment</label><input type="number" id="lAmt" value="100000" oninput="updateLumpsum()">
+                <label>Expected Return (%)</label><input type="number" id="lRate" value="12" oninput="updateLumpsum()">
+                <label>Years</label><input type="number" id="lTime" value="10" oninput="updateLumpsum()">
+                <div class="result-card">Future Value<span id="lumpTotal" class="res-val">0</span></div>
+            </div>
+            <canvas id="lumpChart"></canvas>
         </div>
     </div>
 
@@ -122,9 +172,9 @@
         </form>
     </div>
 
-    <div id="privacy" class="page legal-text"><h2>Privacy Policy</h2><p>Paisa Meter ensures that your financial data is never stored. We use standard cookies for site analytics and live rate synchronization.</p></div>
-    <div id="about" class="page legal-text"><h2>About Us</h2><p>Paisa Meter is a modern financial platform providing tools for a global audience with 100% transparency.</p></div>
-    <div id="disclaimer" class="page legal-text"><h2>Disclaimer</h2><p>Calculated results are estimates. Currency rates are sourced from open-market APIs and may vary slightly from bank rates.</p></div>
+    <div id="privacy" class="page legal-text"><h2>Privacy Policy</h2><p>Paisa Meter ensures that your financial data is never stored.</p></div>
+    <div id="about" class="page legal-text"><h2>About Us</h2><p>Paisa Meter is a modern financial platform.</p></div>
+    <div id="disclaimer" class="page legal-text"><h2>Disclaimer</h2><p>Calculated results are estimates.</p></div>
 
 </div>
 
@@ -134,7 +184,7 @@
 </footer>
 
 <script>
-let eChart, sChart, liveRates = {};
+let eChart, sChart, fChart, lChart, liveRates = {};
 const api_url = "https://open.er-api.com/v6/latest/USD";
 
 async function fetchLiveRates() {
@@ -211,6 +261,41 @@ function updateSip() {
     }
 }
 
+function updateGst() {
+    let P = parseFloat(document.getElementById('gstAmt').value) || 0;
+    let R = parseFloat(document.getElementById('gstRate').value) || 0;
+    let gst = (P * R) / 100;
+    document.getElementById('gstOnly').innerText = gst.toLocaleString();
+    document.getElementById('gstTotal').innerText = (P + gst).toLocaleString();
+}
+
+function updateFdRd() {
+    let type = document.getElementById('invType').value;
+    let P = parseFloat(document.getElementById('fAmt').value) || 0;
+    let R = parseFloat(document.getElementById('fRate').value) || 0;
+    let T = parseFloat(document.getElementById('fTime').value) || 0;
+    let maturity = 0;
+    
+    if(type === "FD") {
+        maturity = P * Math.pow((1 + R/100), T);
+    } else {
+        let n = T * 12; // months
+        let r = (R/100) / 4; // quarterly compounded
+        maturity = P * (Math.pow(1 + r, n/3) - 1) / (1 - Math.pow(1 + r, -1/3));
+    }
+    document.getElementById('fdTotal').innerText = Math.round(maturity).toLocaleString();
+    drawChart('fdChart', ['Invested', 'Interest'], [type === "FD" ? P : P*(T*12), maturity - (type === "FD" ? P : P*(T*12))], fChart, c => fChart = c);
+}
+
+function updateLumpsum() {
+    let P = parseFloat(document.getElementById('lAmt').value) || 0;
+    let R = parseFloat(document.getElementById('lRate').value) || 0;
+    let T = parseFloat(document.getElementById('lTime').value) || 0;
+    let total = P * Math.pow((1 + R/100), T);
+    document.getElementById('lumpTotal').innerText = Math.round(total).toLocaleString();
+    drawChart('lumpChart', ['Principal', 'Profit'], [P, total - P], lChart, c => lChart = c);
+}
+
 function convert() {
     const amt = parseFloat(document.getElementById('amtInput').value) || 0;
     const from = document.getElementById('fromCur').value;
@@ -231,7 +316,7 @@ function drawChart(id, labels, data, chartObj, updateRef) {
     }));
 }
 
-fetchLiveRates(); updateEmi(); updateSip();
+fetchLiveRates(); updateEmi(); updateSip(); updateGst(); updateFdRd(); updateLumpsum();
 </script>
 </body>
 </html>
