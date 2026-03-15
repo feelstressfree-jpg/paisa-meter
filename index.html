@@ -3,57 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Paisa Meter | Premium EMI, SIP, Age & Currency Toolkit</title>
-    <meta name="description" content="Paisa Meter: A professional financial toolkit for calculating EMI, SIP returns, Age, and Global Currency rates. Simple, fast, and accurate.">
-    <meta name="keywords" content="Paisa Meter, Financial Tools, EMI Calculator, SIP Calculator, Age Calculator, Real-time Currency Converter, World Currency Rates, Investment Planning">
-    <meta name="author" content="Paisa Meter">
-    <meta name="robots" content="index, follow">
-
+    <title>Paisa Meter | Real-Time Financial Toolkit</title>
+    <meta name="description" content="Paisa Meter: High-accuracy financial tools with live currency exchange rates, EMI, SIP, and Age calculations.">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
-        :root { 
-            --primary: #0d47a1; --secondary: #2e7d32; --bg: #f4f7f6; --card: #ffffff; --text: #212121; --border: #e0e0e0;
-        }
-        [data-theme="dark"] {
-            --primary: #448aff; --secondary: #66bb6a; --bg: #121212; --card: #1e1e1e; --text: #ffffff; --border: #333333;
-        }
-
-        body { font-family: 'Inter', 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); transition: 0.3s; line-height: 1.6; }
-        
-        /* Navigation */
+        :root { --primary: #0d47a1; --secondary: #2e7d32; --bg: #f4f7f6; --card: #ffffff; --text: #212121; --border: #e0e0e0; }
+        [data-theme="dark"] { --primary: #448aff; --secondary: #66bb6a; --bg: #121212; --card: #1e1e1e; --text: #ffffff; --border: #333333; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--bg); color: var(--text); transition: 0.3s; line-height: 1.6; }
         nav { background: var(--primary); padding: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .logo-text { color: white; font-size: 24px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .logo-text { color: white; font-size: 24px; font-weight: 800; cursor: pointer; }
         .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
-        .nav-link { color: white; text-decoration: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.3s; }
-        .nav-link.active { background: rgba(255,255,255,0.25); }
+        .nav-link { color: white; text-decoration: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .nav-link.active { background: rgba(255,255,255,0.2); font-weight: bold; }
         .theme-toggle { background: none; border: 1px solid white; color: white; padding: 6px 15px; border-radius: 15px; cursor: pointer; font-size: 12px; }
-
-        /* Main Container */
-        .container { max-width: 1000px; margin: 40px auto; background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .container { max-width: 1000px; margin: 40px auto; background: var(--card); padding: 40px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.4s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Tools Design */
+        .page.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
         @media (max-width: 768px) { .calc-grid { grid-template-columns: 1fr; } }
-        
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); box-sizing: border-box; font-size: 16px; transition: 0.3s; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 5px rgba(13, 71, 161, 0.2); }
-        
-        .result-card { background: var(--primary); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-top: 15px; }
-        .res-label { font-size: 14px; opacity: 0.9; }
-        .res-val { font-size: 28px; font-weight: bold; margin-top: 5px; }
-        .btn-submit { background: var(--secondary); color: white; border: none; padding: 16px; width: 100%; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 700; transition: 0.3s; }
-        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        footer { text-align: center; padding: 60px 20px; color: #777; border-top: 1px solid var(--border); margin-top: 50px; font-size: 14px; }
-        .footer-links { margin-top: 15px; }
-        .footer-links span { margin: 0 10px; cursor: pointer; color: var(--primary); font-weight: 500; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); box-sizing: border-box; font-size: 16px; }
+        .result-card { background: var(--primary); color: white; padding: 25px; border-radius: 12px; text-align: center; }
+        .res-val { font-size: 32px; font-weight: bold; display: block; margin-top: 5px; }
+        .btn-submit { background: var(--secondary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .legal-text h3 { color: var(--primary); margin-top: 25px; }
+        footer { text-align: center; padding: 50px 20px; color: #777; border-top: 1px solid var(--border); margin-top: 50px; }
+        .footer-links span { margin: 0 10px; cursor: pointer; color: var(--primary); text-decoration: underline; font-size: 14px; }
     </style>
 </head>
 <body data-theme="light">
@@ -76,16 +53,16 @@
 <div class="container">
     
     <div id="home" class="page active">
-        <h1>Welcome to Paisa Meter</h1>
-        <p>Your ultimate destination for accurate and reliable financial calculations. Our tools are designed to help you plan your future with confidence.</p>
+        <h1>Live Financial Intelligence</h1>
+        <p>Paisa Meter provides real-time data to help you manage your money effectively. From live currency rates to smart investment planning, we've got you covered.</p>
         <div class="calc-grid">
-            <div style="background: rgba(13, 71, 161, 0.05); padding: 25px; border-radius: 15px; border-left: 5px solid var(--primary);">
-                <h3>Smart Planning</h3>
-                <p>Calculate your loan repayments, investment growth, and age milestones instantly with our premium interface.</p>
+            <div style="background: rgba(13,43,161,0.05); padding: 20px; border-radius: 10px;">
+                <h3>Live Currency</h3>
+                <p>Powered by global exchange APIs, our converter updates in real-time to give you the most accurate market rates.</p>
             </div>
-            <div style="background: rgba(46, 125, 50, 0.05); padding: 25px; border-radius: 15px; border-left: 5px solid var(--secondary);">
-                <h3>Global Access</h3>
-                <p>Convert any world currency into your local currency using our comprehensive global exchange converter.</p>
+            <div style="background: rgba(46,125,50,0.05); padding: 20px; border-radius: 10px;">
+                <h3>Smart Visuals</h3>
+                <p>Interactive charts help you visualize your loan interest vs principal and your investment growth over time.</p>
             </div>
         </div>
     </div>
@@ -94,129 +71,93 @@
         <h2>Loan EMI Calculator</h2>
         <div class="calc-grid">
             <div>
-                <label>Principal Loan Amount ($/₹)</label>
-                <input type="number" id="eAmt" value="500000" oninput="updateEmi()">
-                <label>Interest Rate (% Annual)</label>
-                <input type="number" id="eRate" value="9" step="0.1" oninput="updateEmi()">
-                <label>Loan Tenure (Years)</label>
-                <input type="number" id="eTime" value="5" oninput="updateEmi()">
-                <div class="result-card">
-                    <div class="res-label">Monthly EMI Payable</div>
-                    <div id="emiRes" class="res-val">0</div>
-                </div>
+                <label>Loan Amount</label><input type="number" id="eAmt" value="1000000" oninput="updateEmi()">
+                <label>Rate (%)</label><input type="number" id="eRate" value="8.5" step="0.1" oninput="updateEmi()">
+                <label>Tenure (Years)</label><input type="number" id="eTime" value="5" oninput="updateEmi()">
+                <div class="result-card">Monthly EMI<span id="emiRes" class="res-val">0</span></div>
             </div>
-            <div style="padding: 20px;"><canvas id="emiChart"></canvas></div>
+            <canvas id="emiChart"></canvas>
         </div>
     </div>
 
     <div id="sip" class="page">
-        <h2>SIP Investment Calculator</h2>
+        <h2>SIP Returns Calculator</h2>
         <div class="calc-grid">
             <div>
-                <label>Monthly Investment ($/₹)</label>
-                <input type="number" id="sAmt" value="5000" oninput="updateSip()">
-                <label>Expected Return Rate (%)</label>
-                <input type="number" id="sRate" value="12" oninput="updateSip()">
-                <label>Time Period (Years)</label>
-                <input type="number" id="sTime" value="10" oninput="updateSip()">
-                <div class="result-card">
-                    <div class="res-label">Estimated Maturity Value</div>
-                    <div id="sipTotal" class="res-val">0</div>
-                </div>
+                <label>Monthly SIP</label><input type="number" id="sAmt" value="5000" oninput="updateSip()">
+                <label>Return (%)</label><input type="number" id="sRate" value="12" oninput="updateSip()">
+                <label>Years</label><input type="number" id="sTime" value="10" oninput="updateSip()">
+                <div class="result-card">Maturity Value<span id="sipTotal" class="res-val">0</span></div>
             </div>
-            <div style="padding: 20px;"><canvas id="sipChart"></canvas></div>
+            <canvas id="sipChart"></canvas>
         </div>
     </div>
 
     <div id="age" class="page">
-        <h2>Professional Age Calculator</h2>
-        <p>Calculate your exact age in years, months, and days from your date of birth.</p>
+        <h2>Age Calculator</h2>
         <div style="max-width: 500px; margin: auto;">
-            <label>Select Date of Birth</label>
-            <input type="date" id="dob" onchange="calculateAge()">
-            <div class="result-card" style="background: var(--secondary);">
-                <div class="res-label">Current Age</div>
-                <div id="ageRes" class="res-val">---</div>
-            </div>
+            <label>Date of Birth</label><input type="date" id="dob" onchange="calculateAge()">
+            <div class="result-card" style="background: var(--secondary);">Exact Age<span id="ageRes" class="res-val">---</span></div>
         </div>
     </div>
 
     <div id="currency" class="page">
-        <h2>Global Currency Converter</h2>
-        <p>Real-time estimation for over 150+ world currencies.</p>
-        <div style="max-width: 550px; margin: auto; padding: 30px; border: 1px solid var(--border); border-radius: 20px;">
-            <label>Amount to Convert</label>
-            <input type="number" id="amtInput" value="1" oninput="convert()">
-            
-            <label>From Currency</label>
-            <select id="fromCur" onchange="convert()"></select>
-            
-            <label>To Currency</label>
-            <select id="toCur" onchange="convert()"></select>
-            
-            <div class="result-card" style="background: var(--secondary);">
-                <div class="res-label">Converted Amount</div>
-                <div id="convRes" class="res-val">0.00</div>
-            </div>
+        <h2>Live Global Currency</h2>
+        <p id="liveStatus" style="font-size: 12px; color: var(--secondary);">● Live Rates Active</p>
+        <div style="max-width: 500px; margin: auto;">
+            <label>Amount</label><input type="number" id="amtInput" value="1" oninput="convert()">
+            <label>From</label><select id="fromCur" onchange="convert()"></select>
+            <label>To</label><select id="toCur" onchange="convert()"></select>
+            <div class="result-card" style="background: var(--secondary);">Current Value<span id="convRes" class="res-val">0.00</span></div>
         </div>
     </div>
 
     <div id="contact" class="page">
-        <h2>Get in Touch</h2>
-        <p>Have questions? Send us a message and we'll get back to you shortly.</p>
-        <form onsubmit="alert('Message Sent Successfully!'); return false;">
-            <label>Full Name</label>
-            <input type="text" placeholder="John Doe" required>
-            <label>Email Address</label>
-            <input type="email" placeholder="john@example.com" required>
-            <label>Your Message</label>
-            <textarea placeholder="Write your query here..." required style="height: 120px;"></textarea>
+        <h2>Contact Us</h2>
+        <form onsubmit="alert('Thank you! Message sent.'); return false;">
+            <label>Name</label><input type="text" required>
+            <label>Email</label><input type="email" required>
+            <label>Message</label><textarea style="height:100px;" required></textarea>
             <button type="submit" class="btn-submit">Send Message</button>
         </form>
     </div>
 
-    <div id="privacy" class="page"><h2>Privacy Policy</h2><p>Paisa Meter respects your privacy. We do not store any personal data. All calculations are performed on your device.</p></div>
-    <div id="about" class="page"><h2>About Us</h2><p>Paisa Meter is a world-class financial toolkit aimed at simplifying finance for global users.</p></div>
-    <div id="disclaimer" class="page"><h2>Legal Disclaimer</h2><p>Results are for estimation purposes only. Consult a professional advisor before making financial decisions.</p></div>
+    <div id="privacy" class="page legal-text"><h2>Privacy Policy</h2><p>Paisa Meter ensures that your financial data is never stored. We use standard cookies for site analytics and live rate synchronization.</p></div>
+    <div id="about" class="page legal-text"><h2>About Us</h2><p>Paisa Meter is a modern financial platform providing tools for a global audience with 100% transparency.</p></div>
+    <div id="disclaimer" class="page legal-text"><h2>Disclaimer</h2><p>Calculated results are estimates. Currency rates are sourced from open-market APIs and may vary slightly from bank rates.</p></div>
+
 </div>
 
 <footer>
-    <p>&copy; 2026 Paisa Meter | Made for Global Citizens</p>
-    <div class="footer-links">
-        <span onclick="showPage('privacy')">Privacy Policy</span> | 
-        <span onclick="showPage('about')">About Us</span> | 
-        <span onclick="showPage('disclaimer')">Disclaimer</span>
-    </div>
+    <p>&copy; 2026 Paisa Meter | Precision Financial Tools</p>
+    <div class="footer-links"><span onclick="showPage('privacy')">Privacy Policy</span> | <span onclick="showPage('about')">About Us</span> | <span onclick="showPage('disclaimer')">Disclaimer</span></div>
 </footer>
 
 <script>
-let eChart, sChart;
+let eChart, sChart, liveRates = {};
+const api_url = "https://open.er-api.com/v6/latest/USD";
 
-// Dynamic Currency List (Major World Currencies)
-const currencies = {
-    "USD": "United States Dollar", "INR": "Indian Rupee", "EUR": "Euro", "GBP": "British Pound",
-    "JPY": "Japanese Yen", "AED": "UAE Dirham", "CAD": "Canadian Dollar", "AUD": "Australian Dollar",
-    "SAR": "Saudi Riyal", "CNY": "Chinese Yuan", "KWD": "Kuwaiti Dinar", "OMR": "Omani Rial",
-    "QAR": "Qatari Rial", "BHD": "Bahraini Dinar", "SGD": "Singapore Dollar", "CHF": "Swiss Franc",
-    "NZD": "New Zealand Dollar", "ZAR": "South African Rand", "RUB": "Russian Ruble", "PKR": "Pakistani Rupee",
-    "BDT": "Bangladeshi Taka", "LKR": "Sri Lankan Rupee", "NPR": "Nepalese Rupee", "MYR": "Malaysian Ringgit"
-};
-
-// Rates relative to 1 USD (Standard Estimates)
-const rates = {
-    "USD": 1, "INR": 83.50, "EUR": 0.92, "GBP": 0.79, "JPY": 150.25, "AED": 3.67, 
-    "CAD": 1.35, "AUD": 1.52, "SAR": 3.75, "CNY": 7.19, "KWD": 0.31, "OMR": 0.38,
-    "QAR": 3.64, "BHD": 0.38, "SGD": 1.34, "CHF": 0.88, "NZD": 1.63, "ZAR": 19.10,
-    "RUB": 91.50, "PKR": 278.50, "BDT": 109.80, "LKR": 312.40, "NPR": 133.20, "MYR": 4.74
-};
-
-function initCurrency() {
-    const from = document.getElementById('fromCur');
-    const to = document.getElementById('toCur');
-    for (let code in currencies) {
-        from.innerHTML += `<option value="${code}">${code} - ${currencies[code]}</option>`;
-        to.innerHTML += `<option value="${code}">${code} - ${currencies[code]}</option>`;
+async function fetchLiveRates() {
+    try {
+        const response = await fetch(api_url);
+        const data = await response.json();
+        liveRates = data.rates;
+        initCurrencies();
+        convert();
+    } catch (e) {
+        liveRates = {"USD": 1, "INR": 83.5, "EUR": 0.92, "GBP": 0.79};
+        initCurrencies();
+        document.getElementById('liveStatus').innerText = "○ Offline Rates Active";
     }
+}
+
+function initCurrencies() {
+    const from = document.getElementById('fromCur'), to = document.getElementById('toCur');
+    from.innerHTML = ""; to.innerHTML = "";
+    Object.keys(liveRates).forEach(c => {
+        from.innerHTML += `<option value="${c}">${c}</option>`;
+        to.innerHTML += `<option value="${c}">${c}</option>`;
+    });
     from.value = "USD"; to.value = "INR";
 }
 
@@ -238,16 +179,14 @@ function toggleTheme() {
 }
 
 function calculateAge() {
-    const dobValue = document.getElementById('dob').value;
-    if (!dobValue) return;
-    const dob = new Date(dobValue);
+    const dob = new Date(document.getElementById('dob').value);
     const today = new Date();
-    let years = today.getFullYear() - dob.getFullYear();
-    let months = today.getMonth() - dob.getMonth();
-    let days = today.getDate() - dob.getDate();
-    if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
-    if (months < 0) { years--; months += 12; }
-    document.getElementById('ageRes').innerText = `${years}y ${months}m ${days}d`;
+    let y = today.getFullYear() - dob.getFullYear();
+    let m = today.getMonth() - dob.getMonth();
+    let d = today.getDate() - dob.getDate();
+    if (d < 0) { m--; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+    if (m < 0) { y--; m += 12; }
+    document.getElementById('ageRes').innerText = `${y}y ${m}m ${d}d`;
 }
 
 function updateEmi() {
@@ -256,9 +195,8 @@ function updateEmi() {
     let N = parseFloat(document.getElementById('eTime').value) * 12;
     if(P > 0 && R > 0 && N > 0) {
         let emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
-        let total = emi * N;
         document.getElementById('emiRes').innerText = Math.round(emi).toLocaleString();
-        drawChart('emiChart', ['Principal', 'Interest'], [P, total - P], eChart, c => eChart = c);
+        drawChart('emiChart', ['Principal', 'Interest'], [P, (emi * N) - P], eChart, c => eChart = c);
     }
 }
 
@@ -277,8 +215,10 @@ function convert() {
     const amt = parseFloat(document.getElementById('amtInput').value) || 0;
     const from = document.getElementById('fromCur').value;
     const to = document.getElementById('toCur').value;
-    const result = (amt / rates[from] * rates[to]).toFixed(2);
-    document.getElementById('convRes').innerText = `${to} ${result}`;
+    if(liveRates[from] && liveRates[to]) {
+        const res = (amt / liveRates[from]) * liveRates[to];
+        document.getElementById('convRes').innerText = res.toFixed(2);
+    }
 }
 
 function drawChart(id, labels, data, chartObj, updateRef) {
@@ -287,11 +227,11 @@ function drawChart(id, labels, data, chartObj, updateRef) {
     updateRef(new Chart(ctx, {
         type: 'doughnut',
         data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#0d47a1', '#2e7d32'] }] },
-        options: { plugins: { legend: { position: 'bottom' } }, cutout: '70%' }
+        options: { plugins: { legend: { position: 'bottom' } } }
     }));
 }
 
-initCurrency(); updateEmi(); updateSip(); convert();
+fetchLiveRates(); updateEmi(); updateSip();
 </script>
 </body>
 </html>
